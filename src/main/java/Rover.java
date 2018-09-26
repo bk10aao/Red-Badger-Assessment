@@ -7,8 +7,6 @@ public class Rover {
 
     private int xPosition;
     private int yPosition;
-    private int worldXSize;
-    private int worldYSize;
 
     private boolean lost = false;
 
@@ -24,7 +22,6 @@ public class Rover {
 
         this.xPosition = x;
         this.yPosition = y;
-
     }
 
     public void move(String instruction) {
