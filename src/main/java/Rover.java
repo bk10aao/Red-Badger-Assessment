@@ -7,6 +7,10 @@ public class Rover {
 
     private int xPosition;
     private int yPosition;
+    private int worldXSize;
+    private int worldYSize;
+
+    private boolean lost = false;
 
     public Rover(int x, int y, String heading) {
         if(heading.equalsIgnoreCase("N"))
@@ -20,6 +24,22 @@ public class Rover {
 
         this.xPosition = x;
         this.yPosition = y;
+
+    }
+
+    public void move(String instruction) {
+        if (instruction.equalsIgnoreCase("F")) {
+            moveForward();
+            if(xPosition >= 100 || xPosition < 0) {
+                lost = true;
+            } else if(yPosition >= 100 || yPosition < 0) {
+                lost = true;
+            }
+        } else if (instruction.equalsIgnoreCase("L")) {
+            turnLeft();
+        } else if(instruction.equalsIgnoreCase("R")) {
+            turnRight();
+        }
     }
 
     public void turnLeft() {
@@ -84,5 +104,9 @@ public class Rover {
         } else {
             return "W";
         }
+    }
+
+    public String getPosition() {
+        return xPosition + " " + yPosition + " " + getHeading() + (lost == true ? " LOST" : "");
     }
 }

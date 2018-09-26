@@ -138,17 +138,4 @@ public class RoverTest {
         assertEquals(14, yPosition);
         assertEquals(5, xPosition);
     }
-
-    @Test
-    public void instantiateRobotFacingWestAndMoveForwardByOne() {
-        Rover rover = new Rover(5, 15, "W");
-
-        String heading = rover.getHeading();
-        assertEquals(heading, "W");
-        rover.moveForward();
-        int xPosition = rover.getXPosition();
-        int yPosition = rover.getYPosition();
-        assertEquals(15, yPosition);
-        assertEquals(4, xPosition);
-    }
 }

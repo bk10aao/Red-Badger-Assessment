@@ -9,5 +9,4 @@ public class Tile {
     public boolean getSafetyStatus() {
         return this.isSafe;
     }
-
 }
