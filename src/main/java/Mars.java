@@ -34,22 +34,44 @@ public class Mars {
         rover = createRover(startPosition);
         System.out.println(rover.getPosition());
         String lost = "";
-        for(String s: movements.split("")) {
-            int roverXCoordinate = rover.getXPosition();
-            int roverYCoordinate = rover.getYPosition();
-            rover.move(s);
-            if((rover.getXPosition() < 0 || rover.getXPosition() > maxXPosition) ||
-               (rover.getYPosition() < 0 || rover.getYPosition() > maxYPosition)) {
-                try {
-                    worldMap[roverXCoordinate][roverYCoordinate].setUnsafe();
-                } catch (Exception e) {
-                    //already out of bounds so will cause exception so do nothing
-                }
-                lost = " LOST";
+        if(movements.split("").length >= 100) {
+            return "Instructions too long, maximum size 100";
+        } else {
+            for (String s : movements.split("")) {
+                int roverXCoordinate = rover.getXPosition();
+                int roverYCoordinate = rover.getYPosition();
+                rover.move(s);
+                lost = checkIfRoverIsLost(lost, roverXCoordinate, roverYCoordinate);
+                System.out.println(s + ": " + rover.getPosition() + lost);
             }
-            System.out.println(s + ": " + rover.getPosition() + lost);
         }
         return rover.getPosition() + lost;
+    }
+
+    private String checkIfRoverIsLost(String lost, int roverXCoordinate, int roverYCoordinate) {
+        if ((rover.getXPosition() < 0 || rover.getXPosition() > maxXPosition) ||
+            (rover.getYPosition() < 0 || rover.getYPosition() > maxYPosition)) {
+            try {
+                worldMap[roverXCoordinate][roverYCoordinate].setUnsafe();
+                lost = " LOST";
+            } catch (Exception e) {
+                //already out of bounds so will cause exception so do nothing
+            }
+        }
+        return lost;
+    }
+
+    public String getUnsafeTileLocations() {
+        String unsafeLocations = "Unsafe Tiles:";
+        for(int x = 0; x <= maxXPosition; x++) {
+            for(int y = 0; y <= maxYPosition; y++) {
+                if(!worldMap[x][y].getSafetyStatus()) {
+                    unsafeLocations += " (" + x + ", " + y + ")";
+                }
+            }
+        }
+        System.out.println(unsafeLocations);
+        return unsafeLocations;
     }
 
     private Rover createRover(String startPosition) {

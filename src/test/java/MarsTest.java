@@ -99,6 +99,8 @@ public class MarsTest {
         assertEquals(false, tileWhichShouldBeUnsafe);
         boolean tileWhichShouldBeSafe = mars.getTileFromCoordinate(1,1).getSafetyStatus();
         assertEquals(true, tileWhichShouldBeSafe);
+        String unsafeLocations = mars.getUnsafeTileLocations();
+        assertEquals("Unsafe Tiles: (3, 3)", unsafeLocations);
     }
 
     //this is failing as rover is finishing at coordinate x: 2 y: 4  facing south and is therefore lost LOST
@@ -130,5 +132,21 @@ public class MarsTest {
         mars.setupGrid(maxXSize, maxYSize);
         String result = mars.executeInstructions(commands[1], commands[2]);
         assertEquals("2 3 S", result);
+    }
+
+    @Test
+    public void inputReturnsStringInstructionsTooLongMaximumSize100() {
+        String inputOne =   "5 3\n" +
+                "0 3 W\n" +
+                "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+
+        String[] commands = inputOne.split("\n");
+        int maxXSize = Integer.parseInt(commands[0].split(" ")[0]);
+        int maxYSize = Integer.parseInt(commands[0].split(" ")[1]);
+
+        Mars mars = new Mars();
+        mars.setupGrid(maxXSize, maxYSize);
+        String result = mars.executeInstructions(commands[1], commands[2]);
+        assertEquals("Instructions too long, maximum size 100", result);
     }
 }
