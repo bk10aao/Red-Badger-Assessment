@@ -32,7 +32,13 @@ public class Rover {
             } else if(yPosition >= 100 || yPosition < 0) {
                 lost = true;
             }
-        } else if (instruction.equalsIgnoreCase("L")) {
+        } else {
+            turn(instruction);
+        }
+    }
+
+    public void turn(String instruction) {
+        if (instruction.equalsIgnoreCase("L")) {
             turnLeft();
         } else if(instruction.equalsIgnoreCase("R")) {
             turnRight();

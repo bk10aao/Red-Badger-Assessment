@@ -11,7 +11,11 @@ public class Mars {
 
     }
 
-    public void setupGrid(int sizeX, int sizeY) {
+    public Mars (int x, int y) {
+        setupGrid(x, y);
+    }
+
+    private void setupGrid(int sizeX, int sizeY) {
         worldMap = new Tile[sizeX + 1][sizeY + 1];
         maxXPosition = sizeX;
         maxYPosition = sizeY;
@@ -30,6 +34,27 @@ public class Mars {
         }
     }
 
+    public boolean nextTileIsSafe() {
+        try {
+            if(rover.getHeading().equalsIgnoreCase("N")) {
+                Tile t = worldMap[rover.getXPosition()][rover.getYPosition() + 1];
+                return t.getSafetyStatus();
+            } else if (rover.getHeading().equalsIgnoreCase("E")) {
+                Tile t = worldMap[rover.getXPosition() + 1][rover.getYPosition()];
+                return t.getSafetyStatus();
+            } else if(rover.getHeading().equalsIgnoreCase("S")) {
+                Tile t = worldMap[rover.getXPosition()][rover.getYPosition() - 1];
+                return t.getSafetyStatus();
+            } else if(rover.getHeading().equalsIgnoreCase("W")) {
+                Tile t = worldMap[rover.getXPosition() - 1][rover.getYPosition()];
+                return t.getSafetyStatus();
+            }
+        } catch (IndexOutOfBoundsException e) {
+            //is at the edge of the world so we will return true so current tile will be set to unsafe
+        }
+        return true;
+    }
+
     public String executeInstructions(String startPosition, String movements) {
         rover = createRover(startPosition);
         System.out.println(rover.getPosition());
@@ -40,7 +65,13 @@ public class Mars {
             for (String s : movements.split("")) {
                 int roverXCoordinate = rover.getXPosition();
                 int roverYCoordinate = rover.getYPosition();
-                rover.move(s);
+                if(s.equalsIgnoreCase("F")) {
+                    if(nextTileIsSafe() || !lost.isEmpty()) {
+                        rover.move(s);
+                    }
+                } else {
+                    rover.move(s);
+                }
                 lost = checkIfRoverIsLost(lost, roverXCoordinate, roverYCoordinate);
                 System.out.println(s + ": " + rover.getPosition() + lost);
             }

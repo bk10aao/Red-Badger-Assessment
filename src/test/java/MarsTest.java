@@ -9,8 +9,7 @@ public class MarsTest {
 
     @Test
     public void onInstantiationCheckTileAtPositionZeroZeroIsNotNullAndSafe() {
-        Mars mars = new Mars();
-        mars.setupGrid(50, 50);
+        Mars mars = new Mars(50, 50);
 
         Tile t = mars.getTileFromCoordinate(0,0);
         assertNotNull(t);
@@ -19,8 +18,7 @@ public class MarsTest {
 
     @Test
     public void onInstantiationCheckTileAtPositionZeroTenIsNotNullAndSafe() {
-        Mars mars = new Mars();
-        mars.setupGrid(50, 50);
+        Mars mars = new Mars(50, 50);
 
         Tile t = mars.getTileFromCoordinate(0,10);
         assertNotNull(t);
@@ -29,8 +27,7 @@ public class MarsTest {
 
     @Test
     public void onInstantiationCheckTileAtPositionFourtyNineFourtyNineIsNotNullAndSafe() {
-        Mars mars = new Mars();
-        mars.setupGrid(50, 50);
+        Mars mars = new Mars(50, 50);
 
         Tile t = mars.getTileFromCoordinate(49,49);
         assertNotNull(t);
@@ -39,8 +36,7 @@ public class MarsTest {
 
     @Test
     public void onInstantiationCheckTileAtPositionTenTenIsNotNullAndSafe() {
-        Mars mars = new Mars();
-        mars.setupGrid(50, 50);
+        Mars mars = new Mars(50, 50);
 
         Tile t = mars.getTileFromCoordinate(10,10);
         assertNotNull(t);
@@ -49,8 +45,7 @@ public class MarsTest {
 
     @Test
     public void onInstantiationCheckTileAtMinusTenTenReturnsNull() {
-        Mars mars = new Mars();
-        mars.setupGrid(50, 50);
+        Mars mars = new Mars(50, 50);
 
         Tile t = mars.getTileFromCoordinate(-10,10);
         assertNull(t);
@@ -58,8 +53,7 @@ public class MarsTest {
 
     @Test
     public void onInstantiationCheckTileAtSixtySixtyReturnsNull() {
-        Mars mars = new Mars();
-        mars.setupGrid(50, 50);
+        Mars mars = new Mars(50, 50);
 
         Tile t = mars.getTileFromCoordinate(60,60);
         assertNull(t);
@@ -67,86 +61,73 @@ public class MarsTest {
 
     @Test
     public void inputReturnsRoverOnCoordinatesXOneYOneFacingEast() {
-        String inputOne =   "5 3\n" +
-                            "1 1 E\n" +
-                            "RFRFRFRF";
+        Mars mars = new Mars(5, 3);
 
-        String[] commands = inputOne.split("\n");
-        int maxXSize = Integer.parseInt(commands[0].split(" ")[0]);
-        int maxYSize = Integer.parseInt(commands[0].split(" ")[1]);
-
-        Mars mars = new Mars();
-        mars.setupGrid(maxXSize, maxYSize);
-        String result = mars.executeInstructions(commands[1], commands[2]);
+        String result = mars.executeInstructions("1 1 E", "RFRFRFRF");
         assertEquals("1 1 E", result);
     }
 
     @Test
     public void inputReturnsRoverOnCoordinatesXThreeYThreeFacingNorthAndLost() {
-        String inputOne =   "5 3\n" +
-                            "3 2 N\n" +
-                            "FRRFLLFFRRFLL";
+        Mars mars = new Mars(5, 3);
 
-        String[] commands = inputOne.split("\n");
-        int maxXSize = Integer.parseInt(commands[0].split(" ")[0]);
-        int maxYSize = Integer.parseInt(commands[0].split(" ")[1]);
-
-        Mars mars = new Mars();
-        mars.setupGrid(maxXSize, maxYSize);
-        String result = mars.executeInstructions(commands[1], commands[2]);
+        String result = mars.executeInstructions("3 2 N", "FRRFLLFFRRFLL");
         assertEquals("3 3 N LOST", result);
+
         boolean tileWhichShouldBeUnsafe = mars.getTileFromCoordinate(3,3).getSafetyStatus();
         assertEquals(false, tileWhichShouldBeUnsafe);
+
         boolean tileWhichShouldBeSafe = mars.getTileFromCoordinate(1,1).getSafetyStatus();
         assertEquals(true, tileWhichShouldBeSafe);
+
         String unsafeLocations = mars.getUnsafeTileLocations();
         assertEquals("Unsafe Tiles: (3, 3)", unsafeLocations);
     }
 
-    //this is failing as rover is finishing at coordinate x: 2 y: 4  facing south and is therefore lost LOST
-    //I have tried this on paper and getting the same result, hence printing the commands and result in move output
-    //please see the instruction followed by the end coordinates and heading below and by running the failing test
-    //    0 3 W
-    //    L: 0 3 S
-    //    L: 0 3 E
-    //    F: 1 3 E
-    //    F: 2 3 E
-    //    F: 3 3 E
-    //    L: 3 3 N
-    //    F: 3 4 N
-    //    L: 3 4 W
-    //    F: 2 4 W
-    //    L: 2 4 S
     @Ignore
     @Test
     public void inputReturnsRoverOnCoordinatesXTwoYThreeFacingSouth() {
-        String inputOne =   "5 3\n" +
-                            "0 3 W\n" +
-                            "LLFFFLFLFL";
+        Mars mars = new Mars(5, 3);
 
-        String[] commands = inputOne.split("\n");
-        int maxXSize = Integer.parseInt(commands[0].split(" ")[0]);
-        int maxYSize = Integer.parseInt(commands[0].split(" ")[1]);
-
-        Mars mars = new Mars();
-        mars.setupGrid(maxXSize, maxYSize);
-        String result = mars.executeInstructions(commands[1], commands[2]);
+        String result = mars.executeInstructions("0 3 W", "LLFFFLFLFL");
         assertEquals("2 3 S", result);
     }
 
     @Test
+    public void testThatBotDoesNotMoveOntoTileThatHasPreviouslyLostARobot() {
+        Mars mars = new Mars(5, 3);
+
+        String result = mars.executeInstructions("0 3 N", "F");
+        assertEquals("0 4 N LOST", result);
+
+        result = mars.executeInstructions("0 2 N", "F");
+        assertEquals("0 2 N", result);
+
+        String unsafeLocations = mars.getUnsafeTileLocations();
+        assertEquals("Unsafe Tiles: (0, 3)", unsafeLocations);
+    }
+
+    @Test
+    public void testThatBotDoesNotMoveOntoTileThatHasPreviouslyLostARobotButThenPerformsFurtherActions() {
+        Mars mars = new Mars(5, 3);
+
+        String result = mars.executeInstructions("0 3 N", "F");
+        assertEquals("0 4 N LOST", result);
+
+        result = mars.executeInstructions("0 2 N", "FRF");
+        assertEquals("1 2 E", result);
+
+        String unsafeLocations = mars.getUnsafeTileLocations();
+        assertEquals("Unsafe Tiles: (0, 3)", unsafeLocations);
+    }
+
+
+    @Test
     public void inputReturnsStringInstructionsTooLongMaximumSize100() {
-        String inputOne =   "5 3\n" +
-                "0 3 W\n" +
-                "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+        String moves = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
 
-        String[] commands = inputOne.split("\n");
-        int maxXSize = Integer.parseInt(commands[0].split(" ")[0]);
-        int maxYSize = Integer.parseInt(commands[0].split(" ")[1]);
-
-        Mars mars = new Mars();
-        mars.setupGrid(maxXSize, maxYSize);
-        String result = mars.executeInstructions(commands[1], commands[2]);
+        Mars mars = new Mars(5, 3);
+        String result = mars.executeInstructions("0 3 W", moves);
         assertEquals("Instructions too long, maximum size 100", result);
     }
 }
