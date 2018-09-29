@@ -1,9 +1,7 @@
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class MarsTest {
 
@@ -13,7 +11,7 @@ public class MarsTest {
 
         Tile t = mars.getTileFromCoordinate(0,0);
         assertNotNull(t);
-        assertEquals(true, t.getSafetyStatus());
+        assertTrue(t.getSafetyStatus());
     }
 
     @Test
@@ -22,7 +20,7 @@ public class MarsTest {
 
         Tile t = mars.getTileFromCoordinate(0,10);
         assertNotNull(t);
-        assertEquals(true, t.getSafetyStatus());
+        assertTrue(t.getSafetyStatus());
     }
 
     @Test
@@ -31,7 +29,7 @@ public class MarsTest {
 
         Tile t = mars.getTileFromCoordinate(49,49);
         assertNotNull(t);
-        assertEquals(true, t.getSafetyStatus());
+        assertTrue(t.getSafetyStatus());
     }
 
     @Test
@@ -40,7 +38,7 @@ public class MarsTest {
 
         Tile t = mars.getTileFromCoordinate(10,10);
         assertNotNull(t);
-        assertEquals(true, t.getSafetyStatus());
+        assertTrue(t.getSafetyStatus());
     }
 
     @Test
@@ -74,17 +72,13 @@ public class MarsTest {
         String result = mars.executeInstructions("3 2 N", "FRRFLLFFRRFLL");
         assertEquals("3 3 N LOST", result);
 
-        boolean tileWhichShouldBeUnsafe = mars.getTileFromCoordinate(3,3).getSafetyStatus();
-        assertEquals(false, tileWhichShouldBeUnsafe);
+        boolean tileWhichShouldBeUnsafe = mars.getTileFromCoordinate(3,2).getSafetyStatus();
+        assertFalse(tileWhichShouldBeUnsafe);
 
         boolean tileWhichShouldBeSafe = mars.getTileFromCoordinate(1,1).getSafetyStatus();
-        assertEquals(true, tileWhichShouldBeSafe);
-
-        String unsafeLocations = mars.getUnsafeTileLocations();
-        assertEquals("Unsafe Tiles: (3, 3)", unsafeLocations);
+        assertTrue(tileWhichShouldBeSafe);
     }
 
-    @Ignore
     @Test
     public void inputReturnsRoverOnCoordinatesXTwoYThreeFacingSouth() {
         Mars mars = new Mars(5, 3);
@@ -102,9 +96,6 @@ public class MarsTest {
 
         result = mars.executeInstructions("0 2 N", "F");
         assertEquals("0 2 N", result);
-
-        String unsafeLocations = mars.getUnsafeTileLocations();
-        assertEquals("Unsafe Tiles: (0, 3)", unsafeLocations);
     }
 
     @Test
@@ -116,11 +107,7 @@ public class MarsTest {
 
         result = mars.executeInstructions("0 2 N", "FRF");
         assertEquals("1 2 E", result);
-
-        String unsafeLocations = mars.getUnsafeTileLocations();
-        assertEquals("Unsafe Tiles: (0, 3)", unsafeLocations);
     }
-
 
     @Test
     public void inputReturnsStringInstructionsTooLongMaximumSize100() {

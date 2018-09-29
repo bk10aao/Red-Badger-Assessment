@@ -16,11 +16,11 @@ public class Mars {
     }
 
     private void setupGrid(int sizeX, int sizeY) {
-        worldMap = new Tile[sizeX + 1][sizeY + 1];
+        worldMap = new Tile[sizeY + 1][sizeX + 1];
         maxXPosition = sizeX;
         maxYPosition = sizeY;
-        for(int x = 0; x <= sizeX; x++) {
-            for(int y = 0; y <= sizeY; y++) {
+        for(int x = 0; x <= sizeY; x++) {
+            for(int y = 0; y <= sizeX; y++) {
                 worldMap[x][y] = new Tile();
             }
         }
@@ -57,7 +57,8 @@ public class Mars {
 
     public String executeInstructions(String startPosition, String movements) {
         rover = createRover(startPosition);
-        System.out.println(rover.getPosition());
+        System.out.println("Rover starting at:  " + rover.getPosition());
+        System.out.println("Rover instructions: " + movements);
         String lost = "";
         if(movements.split("").length >= 100) {
             return "Instructions too long, maximum size 100";
@@ -72,30 +73,35 @@ public class Mars {
                 } else {
                     rover.move(s);
                 }
-                lost = checkIfRoverIsLost(lost, roverXCoordinate, roverYCoordinate);
-                System.out.println(s + ": " + rover.getPosition() + lost);
+
+                if(checkIfRoverIsLost(lost, roverXCoordinate, roverYCoordinate)) {
+                    System.out.println("Rover lost at:      " + rover.getPosition() + " LOST");
+                    return rover.getPosition() + " LOST";
+                }
             }
         }
+        System.out.println("Rover safely at:    " + rover.getPosition());
+
         return rover.getPosition() + lost;
     }
 
-    private String checkIfRoverIsLost(String lost, int roverXCoordinate, int roverYCoordinate) {
-        if ((rover.getXPosition() < 0 || rover.getXPosition() > maxXPosition) ||
-            (rover.getYPosition() < 0 || rover.getYPosition() > maxYPosition)) {
+    private boolean checkIfRoverIsLost(String lost, int roverXCoordinate, int roverYCoordinate) {
+        if ((rover.getXPosition() < 0 || rover.getXPosition() > maxXPosition - 1) ||
+            (rover.getYPosition() < 0 || rover.getYPosition() > maxYPosition - 1)) {
             try {
                 worldMap[roverXCoordinate][roverYCoordinate].setUnsafe();
-                lost = " LOST";
+                return true;
             } catch (Exception e) {
-                //already out of bounds so will cause exception so do nothing
+                return false;
             }
         }
-        return lost;
+        return false;
     }
 
     public String getUnsafeTileLocations() {
         String unsafeLocations = "Unsafe Tiles:";
-        for(int x = 0; x <= maxXPosition; x++) {
-            for(int y = 0; y <= maxYPosition; y++) {
+        for(int x = 0; x <= maxYPosition; x++) {
+            for(int y = 0; y <= maxXPosition; y++) {
                 if(!worldMap[x][y].getSafetyStatus()) {
                     unsafeLocations += " (" + x + ", " + y + ")";
                 }
