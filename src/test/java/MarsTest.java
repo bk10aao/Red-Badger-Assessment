@@ -40,7 +40,6 @@ public class MarsTest {
         assertNotNull(t);
         assertTrue(t.getSafetyStatus());
     }
-
     @Test
     public void onInstantiationCheckTileAtMinusTenTenReturnsNull() {
         Mars mars = new Mars(50, 50);
@@ -79,6 +78,7 @@ public class MarsTest {
         assertTrue(tileWhichShouldBeSafe);
     }
 
+    @Ignore
     @Test
     public void inputReturnsRoverOnCoordinatesXTwoYThreeFacingSouth() {
         Mars mars = new Mars(5, 3);
