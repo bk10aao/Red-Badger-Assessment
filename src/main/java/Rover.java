@@ -11,15 +11,14 @@ public class Rover {
     private boolean lost = false;
 
     public Rover(int x, int y, String heading) {
-        if(heading.equalsIgnoreCase("N"))
+        if(heading.equalsIgnoreCase("N")) {
             NORTH = true;
-        if(heading.equalsIgnoreCase("E"))
+        } else if(heading.equalsIgnoreCase("E")) {
             EAST = true;
-        if(heading.equalsIgnoreCase("S"))
+        } else if(heading.equalsIgnoreCase("S")) {
             SOUTH = true;
-        if(heading.equalsIgnoreCase("W"))
+        } else if(heading.equalsIgnoreCase("W"))
             WEST = true;
-
         this.xPosition = x;
         this.yPosition = y;
     }
